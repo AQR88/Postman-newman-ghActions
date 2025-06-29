@@ -1,0 +1,1235 @@
+{
+	"info": {
+		"_postman_id": "5492f2bd-a51f-470e-bb42-b58435c4eee2",
+		"name": "store",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "30575843"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "List products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Get product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Item has id=3\", () => {\r",
+									"  const response = pm.response.json();\r",
+									"  pm.expect(response.id).to.eql(3);\r",
+									"});\r",
+									"\r",
+									"const schema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"price\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"description\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"name\",\r",
+									"    \"price\",\r",
+									"    \"sku\",\r",
+									"    \"description\"\r",
+									"  ]\r",
+									"};\r",
+									"\r",
+									"pm.test('Response is correct', function() {\r",
+									"  pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"apple\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/products/3"
+					},
+					"response": []
+				},
+				{
+					"name": "Create product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Item is orange\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.expect(responseJson.name).to.eql(\"orange\");\r",
+									"  pm.expect(responseJson.price).to.eql(8);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"orange\",\r\n    \"price\": 8,\r\n    \"sku\": 123321123,\r\n    \"description\": \"wouh\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Update product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Item is orange\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.expect(responseJson.name).to.eql(\"banana\");\r",
+									"  pm.expect(responseJson.price).to.eql(155);\r",
+									"  });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 4,\r\n    \"name\": \"banana\",\r\n    \"price\": 155,\r\n    \"sku\": 123321123,\r\n    \"description\": \"changed description\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"const schema = {\r",
+									"  \r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"price\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"description\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"name\",\r",
+									"    \"price\",\r",
+									"    \"sku\",\r",
+									"    \"description\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"};\r",
+									"pm.test('The response returns the deleted object', function() {\r",
+									"  pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/products/4"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "List orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"const schema = {\r",
+									"  \r",
+									"  \"type\": \"array\",\r",
+									"  \"items\": [\r",
+									"    {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"name\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"sku\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"name\",\r",
+									"        \"sku\"\r",
+									"      ]\r",
+									"    },\r",
+									"    {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"name\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"sku\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"name\",\r",
+									"        \"sku\"\r",
+									"      ]\r",
+									"    },\r",
+									"    {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"name\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"sku\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"name\",\r",
+									"        \"sku\"\r",
+									"      ]\r",
+									"    }\r",
+									"  ]\r",
+									"};\r",
+									"pm.test('Response is correct', function() {\r",
+									"  pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Get order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test(\"Order has correct id\", () => {\r",
+									"  const response = pm.response.json();\r",
+									"  pm.expect(response.id).to.eql(3);\r",
+									"});\r",
+									"\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Order has correct data types\", () => {\r",
+									"  pm.expect(jsonData).to.be.an(\"object\");\r",
+									"  pm.expect(jsonData.id).to.be.a(\"number\");\r",
+									"  pm.expect(jsonData.name).to.be.a(\"string\");\r",
+									"  pm.expect(jsonData.sku).to.be.a(\"number\");\r",
+									"  \r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/orders/3"
+					},
+					"response": []
+				},
+				{
+					"name": "Create order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201 Created\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"pm.test(\"Created order has correct name\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.expect(responseJson.name).to.eql(\"order5\");\r",
+									"});\r",
+									"pm.test(\"Content-Type header is application/json\", () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"});\r",
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"order5\",\r\n    \"sku\": 123425445656765\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Update order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Created order has correct sku\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.expect(responseJson.sku).to.eql(123425445656765);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 4,\r\n    \"name\": \"order5\",\r\n    \"sku\": 123425445656765\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"const schema = {\r",
+									"\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"name\",\r",
+									"    \"sku\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"};\r",
+									"pm.test('The response returns the deleted order', function() {\r",
+									"  pm.response.to.have.jsonSchema(schema);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/orders/4"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test(\"Array length is 2 items\", function(){\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.length).to.eq(2);\r",
+									"    pm.expect(responseJson).to.be.an(\"array\");\r",
+									"\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users?page=1&pageSize=2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const schema = {\r",
+									"  \r",
+									"  \"type\": \"array\",\r",
+									"  \"items\": [\r",
+									"    {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"firstName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"lastName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"email\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"dateOfBirth\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"emailVerified\": {\r",
+									"          \"type\": \"boolean\"\r",
+									"        },\r",
+									"        \"signUpDate\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"status\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"level\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"firstName\",\r",
+									"        \"lastName\",\r",
+									"        \"email\",\r",
+									"        \"dateOfBirth\",\r",
+									"        \"emailVerified\",\r",
+									"        \"signUpDate\",\r",
+									"        \"status\",\r",
+									"        \"level\"\r",
+									"      ]\r",
+									"    },\r",
+									"    {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"firstName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"lastName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"email\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"dateOfBirth\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"emailVerified\": {\r",
+									"          \"type\": \"boolean\"\r",
+									"        },\r",
+									"        \"signUpDate\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"status\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"level\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"firstName\",\r",
+									"        \"lastName\",\r",
+									"        \"email\",\r",
+									"        \"dateOfBirth\",\r",
+									"        \"emailVerified\",\r",
+									"        \"signUpDate\",\r",
+									"        \"status\",\r",
+									"        \"level\"\r",
+									"      ]\r",
+									"    },\r",
+									"    {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"firstName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"lastName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"email\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"dateOfBirth\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"emailVerified\": {\r",
+									"          \"type\": \"boolean\"\r",
+									"        },\r",
+									"        \"signUpDate\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"status\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"level\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"firstName\",\r",
+									"        \"lastName\",\r",
+									"        \"email\",\r",
+									"        \"dateOfBirth\",\r",
+									"        \"emailVerified\",\r",
+									"        \"signUpDate\",\r",
+									"        \"status\",\r",
+									"        \"level\"\r",
+									"      ]\r",
+									"    },\r",
+									"    {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"firstName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"lastName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"email\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"dateOfBirth\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"emailVerified\": {\r",
+									"          \"type\": \"boolean\"\r",
+									"        },\r",
+									"        \"signUpDate\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"status\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"level\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"firstName\",\r",
+									"        \"lastName\",\r",
+									"        \"email\",\r",
+									"        \"dateOfBirth\",\r",
+									"        \"emailVerified\",\r",
+									"        \"signUpDate\",\r",
+									"        \"status\",\r",
+									"        \"level\"\r",
+									"      ]\r",
+									"    },\r",
+									"    {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"firstName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"lastName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"email\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"dateOfBirth\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"emailVerified\": {\r",
+									"          \"type\": \"boolean\"\r",
+									"        },\r",
+									"        \"signUpDate\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"status\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"level\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"firstName\",\r",
+									"        \"lastName\",\r",
+									"        \"email\",\r",
+									"        \"dateOfBirth\",\r",
+									"        \"emailVerified\",\r",
+									"        \"signUpDate\",\r",
+									"        \"status\",\r",
+									"        \"level\"\r",
+									"      ]\r",
+									"    },\r",
+									"    {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"firstName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"lastName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"email\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"dateOfBirth\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"emailVerified\": {\r",
+									"          \"type\": \"boolean\"\r",
+									"        },\r",
+									"        \"signUpDate\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"status\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"level\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"firstName\",\r",
+									"        \"lastName\",\r",
+									"        \"email\",\r",
+									"        \"dateOfBirth\",\r",
+									"        \"emailVerified\",\r",
+									"        \"signUpDate\",\r",
+									"        \"status\",\r",
+									"        \"level\"\r",
+									"      ]\r",
+									"    },\r",
+									"    {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"firstName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"lastName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"email\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"dateOfBirth\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"emailVerified\": {\r",
+									"          \"type\": \"boolean\"\r",
+									"        },\r",
+									"        \"signUpDate\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"status\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"level\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"firstName\",\r",
+									"        \"lastName\",\r",
+									"        \"email\",\r",
+									"        \"dateOfBirth\",\r",
+									"        \"emailVerified\",\r",
+									"        \"signUpDate\",\r",
+									"        \"status\",\r",
+									"        \"level\"\r",
+									"      ]\r",
+									"    },\r",
+									"    {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"firstName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"lastName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"email\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"dateOfBirth\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"emailVerified\": {\r",
+									"          \"type\": \"boolean\"\r",
+									"        },\r",
+									"        \"signUpDate\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"status\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"level\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"firstName\",\r",
+									"        \"lastName\",\r",
+									"        \"email\",\r",
+									"        \"dateOfBirth\",\r",
+									"        \"emailVerified\",\r",
+									"        \"signUpDate\",\r",
+									"        \"status\",\r",
+									"        \"level\"\r",
+									"      ]\r",
+									"    },\r",
+									"    {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"firstName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"lastName\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"email\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"dateOfBirth\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"emailVerified\": {\r",
+									"          \"type\": \"boolean\"\r",
+									"        },\r",
+									"        \"signUpDate\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"status\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"level\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"firstName\",\r",
+									"        \"lastName\",\r",
+									"        \"email\",\r",
+									"        \"dateOfBirth\",\r",
+									"        \"emailVerified\",\r",
+									"        \"signUpDate\",\r",
+									"        \"status\",\r",
+									"        \"level\"\r",
+									"      ]\r",
+									"    }\r",
+									"  ]\r",
+									"};\r",
+									"pm.test('Response has a correct structure', function() {\r",
+									"  pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const schema = {\r",
+									" \r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"firstName\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"lastName\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"email\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"dateOfBirth\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"emailVerified\": {\r",
+									"      \"type\": \"boolean\"\r",
+									"    },\r",
+									"    \"signUpDate\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"status\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"level\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"firstName\",\r",
+									"    \"lastName\",\r",
+									"    \"email\",\r",
+									"    \"dateOfBirth\",\r",
+									"    \"emailVerified\",\r",
+									"    \"signUpDate\",\r",
+									"    \"status\",\r",
+									"    \"level\"\r",
+									"  ]\r",
+									"};\r",
+									"pm.test('User has righ structure', function() {\r",
+									"  pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"pm.test(\"User has verified email\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.expect(responseJson.emailVerified).to.eql(true);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/users/3"
+					},
+					"response": []
+				},
+				{
+					"name": "Create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+									"});\r",
+									"pm.test(\"Status code name has string\", () => {\r",
+									"  pm.response.to.have.status(\"Created\");\r",
+									"});\r",
+									"\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Test data type of the response\", () => {\r",
+									"pm.expect(jsonData).to.be.an(\"object\");\r",
+									"pm.expect(jsonData.firstName).to.be.a(\"string\");\r",
+									"pm.expect(jsonData.lastName).to.be.a(\"string\");\r",
+									"pm.expect(jsonData.email).to.be.a(\"string\");\r",
+									"pm.expect(jsonData.dateOfBirth).to.be.a(\"string\");\r",
+									"pm.expect(jsonData.emailVerified).to.be.a(\"boolean\");\r",
+									"pm.expect(jsonData.signUpDate).to.be.a(\"string\");\r",
+									"pm.expect(jsonData.status).to.be.a(\"string\");\r",
+									"pm.expect(jsonData.level).to.be.a(\"string\");\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Dream\",\r\n    \"lastName\": \"Real\",\r\n    \"email\": \"dream.real@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Person is Ilon Mask\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.expect(responseJson.firstName).to.eql(\"Ilon\");\r",
+									"  pm.expect(responseJson.lastName).to.eql(\"Mask\");\r",
+									"  pm.expect(responseJson.email).to.eql(\"ilon.mask@gmail.com\");\r",
+									"});\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Ilon\",\r\n    \"lastName\": \"Mask\",\r\n    \"email\": \"ilon.mask@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\",\r\n    \"id\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"const schema = {\r",
+									"\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"firstName\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"lastName\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"email\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"dateOfBirth\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"emailVerified\": {\r",
+									"      \"type\": \"boolean\"\r",
+									"    },\r",
+									"    \"signUpDate\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"status\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"level\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"firstName\",\r",
+									"    \"lastName\",\r",
+									"    \"email\",\r",
+									"    \"dateOfBirth\",\r",
+									"    \"emailVerified\",\r",
+									"    \"signUpDate\",\r",
+									"    \"status\",\r",
+									"    \"level\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"};\r",
+									"pm.test('The response returns the deleted user', function() {\r",
+									"  pm.response.to.have.jsonSchema(schema);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/users/10"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}
