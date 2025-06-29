@@ -29,7 +29,7 @@ jobs:
         # Run the Postman collection
       - name: Run POSTMAN collection
         run: |
-          newman run petstore.collection.json \
+          newman run petstore.postman_collection.json \
           -r htmlextra \
           --reporter-htmlextra-export testResults/htmlreport.html \
           --reporter-htmlextra-darkTheme\
